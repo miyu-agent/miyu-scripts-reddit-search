@@ -1,0 +1,6 @@
+[package]
+version = "0.1.0"
+name = { en = "Reddit search", zh = "Reddit 检索" }
+summary = { en = "Search Reddit site-wide or in a subreddit, list subreddits and users, read a post with its comments", zh = "全站或版块内搜 Reddit，列版块、用户的帖子，读帖子和评论" }
+author = "SHORiN-KiWATA"
+icon = "message-circle"
