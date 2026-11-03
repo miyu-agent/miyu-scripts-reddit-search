@@ -73,7 +73,7 @@ def progress(text):
 
 
 def cache_path(name):
-    base = os.environ.get("MIYU_SCRIPT_CACHE_DIR")
+    base = os.environ.get("MIYU_CACHE_DIR")
     if not base:
         return None
     os.makedirs(base, exist_ok=True)
