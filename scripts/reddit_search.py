@@ -28,6 +28,7 @@
   site-wide keyword search, and scores fill in about 36 hours after posting.
 """
 
+import calendar
 import hashlib
 import html
 import html.parser
@@ -245,7 +246,7 @@ def ago(ts):
 
 def iso(text):
     try:
-        return time.mktime(time.strptime(text[:19], "%Y-%m-%dT%H:%M:%S")) - time.timezone
+        return calendar.timegm(time.strptime(text[:19], "%Y-%m-%dT%H:%M:%S"))
     except (TypeError, ValueError):
         return None
 
@@ -503,8 +504,13 @@ def arguments():
         limit = int(args.get("limit") or 10)
     except (TypeError, ValueError):
         raise Failure("limit 要是整数")
-    return {"query": text("query"), "subreddit": bare(text("subreddit"), "r"),
-            "author": bare(bare(text("author"), "u"), "user"), "find": bare(text("find_subreddit"), "r"),
+    sub, author = bare(text("subreddit"), "r"), bare(bare(text("author"), "u"), "user")
+    if sub and not re.fullmatch(r"[A-Za-z0-9_+]+", sub):
+        raise Failure(f"subreddit 只认字母、数字、下划线（几个版块用 + 连），不认「{sub}」")
+    if author and not re.fullmatch(r"[A-Za-z0-9_-]+", author):
+        raise Failure(f"author 只认字母、数字、- 和 _，不认「{author}」")
+    return {"query": text("query"), "subreddit": sub,
+            "author": author, "find": bare(text("find_subreddit"), "r"),
             "sort": text("sort").lower(), "time": text("time").lower(), "limit": max(1, min(limit, 50)),
             "limit_given": args.get("limit") is not None}
 
